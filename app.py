@@ -5,8 +5,11 @@ import mysql.connector
 app = Flask(__name__)
 app.secret_key = 'bellabellabella12345678910'
 
-cnx = mysql.connector.connect(user='root', password='Lollipoplollipop02', host='localhost', port='3306', database='project_work')
+cnx = mysql.connector.connect(user='root', password='password', host='localhost', port='3306', database='project_work')
 cursor = cnx.cursor()
+
+# 400 = bad request (username or password missing)
+# 401 = password or username not valid
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -27,7 +30,7 @@ def login():
         if 'username' in session and 'user_id' in session:
             return make_response('logged in', 200)
         else:
-            return make_response('', 401)
+            return make_response('not logged', 401)
 
 
 @app.route("/logout", methods=['POST'])
