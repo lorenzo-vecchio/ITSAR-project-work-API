@@ -8,8 +8,15 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = "None"
 CORS(app, supports_credentials=True, resources={r"/*": {"origins": ["http://localhost:3000"]}}, allow_headers="*")
 
-app.secret_key = 'fdfgfdsgfgdsfgdfdfdfdsfdsds'
+app.secret_key = 'fdfd'
 
+db_connection_info = {
+    "user": "root",
+    "password": "mAm7acshQgItFwF4Ze54",
+    "host": "containers-us-west-167.railway.app",
+    "port": "7433",
+    "database": "railway"
+}
 
 
 @app.before_request
@@ -22,7 +29,7 @@ def basic_authentication():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    cnx = mysql.connector.connect(user='root', password='password', host='localhost', port='3306', database='project_work')
+    cnx = mysql.connector.connect(**db_connection_info)
     cursor = cnx.cursor()
     if request.method == 'POST':
         try:
@@ -30,7 +37,7 @@ def login():
             password = request.json['password']
         except:
             return make_response('ERROR: username or password missing', 400)
-        cursor.execute("SELECT id, userName, email FROM utenti WHERE userName = %s AND password = %s", (username, password))
+        cursor.execute("SELECT id, userName FROM utenti WHERE userName = %s AND password = %s", (username, password))
         user = cursor.fetchone()
         if user is None:
             return make_response('not valid username or password', 401)
@@ -46,7 +53,7 @@ def login():
         
 @app.route("/animals", methods=['GET', 'POST'])
 def animals():
-    cnx = mysql.connector.connect(user='root', password='Lollipoplollipop02', host='localhost', port='3306', database='project_work')
+    cnx = mysql.connector.connect(**db_connection_info)
     cursor = cnx.cursor()
     if request.method == 'GET':
         if 'username' in session and 'user_id' in session:
@@ -68,7 +75,7 @@ def animals():
 
 @app.route("/luoghi", methods=['GET'])
 def luoghi():
-    cnx = mysql.connector.connect(user='root', password='Lollipoplollipop02', host='localhost', port='3306', database='project_work')
+    cnx = mysql.connector.connect(**db_connection_info)
     cursor = cnx.cursor()
     if request.method == 'GET':
         if 'username' in session and 'user_id' in session:
