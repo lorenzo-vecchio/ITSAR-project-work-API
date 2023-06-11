@@ -6,7 +6,7 @@ app = Flask(__name__)
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = "None"
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": ["http://localhost:3000"]}}, allow_headers="*")
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": ["http://localhost"]}}, allow_headers="*")
 
 app.secret_key = 'fdfd'
 
@@ -37,14 +37,17 @@ def register():
             password = request.json['password']
             mail = request.json['mail']
         except:
-            return make_response('ERROR: username or password missing', 400)
+            return make_response('ERROR: username, password or mail missing', 400)
         cursor.execute("SELECT id, userName FROM utenti WHERE userName = %s AND password = %s", (username, password))
         user = cursor.fetchone()
         if user is None:
-            cursor.execute("INSERT INTO utenti (userName, password, email) VALUES ('%s', '%s', '%s');", (username, password, mail))
-            user [0] = cursor.lastrowid
-            cnx.commit
-        session['user_id'] = user[0]
+            cursor.execute("INSERT INTO utenti (userName, password, email) VALUES (%s, %s, %s);", (username, password, mail))
+            id = cursor.lastrowid
+            cnx.commit()
+        if user is not None:
+            session['user_id'] = user[0]
+        else:
+            session['user_id'] = id
         session['username'] = username
         return make_response('logged in', 200)
         
