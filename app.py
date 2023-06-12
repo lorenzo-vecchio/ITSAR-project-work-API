@@ -95,6 +95,23 @@ def animals():
                 }
                 animals.append(animal)
             return jsonify(animals)
+        if request.method == 'POST':
+            try:
+                nome_animale = request.json['nome_animale']
+                sesso = request.json['sesso']
+                data_di_nascita = request.json['data_di_nascita']
+                razza = request.json['razza'].lower()
+            except:
+                return make_response('ERROR: username, password or mail missing', 400)
+            cursor.execute("SELECT razze.id FROM razze WHERE nomeRazza = '%s", (razza))
+            result = cursor.fetchone
+            if result is not None:
+                id_razza = result[0]
+            if result is None:
+                cursor.execute("INSERT INTO razze (nomeRazza) VALUES ('%s');", (razza))
+                id_razza = cursor.lastrowid
+            cursor.execute("INSERT INTO animali (nomeAnimale, sesso, data_di_nascita, id_razza, id_utente) VALUES ('%s', '%s', '%s', 1, 1);", (nome_animale, sesso, data_di_nascita, id_razza, session.get('user_id')))
+            cnx.commit()
     if not ('username' in session and 'user_id' in session):
         return make_response('not logged', 401)
 
