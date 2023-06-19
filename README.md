@@ -1,51 +1,166 @@
-# End-Points
-Ecco la lista di tutti gli end-point disponibili:
-- **/register** (per la registrazione di un nuovo utente)
-- **/login** (per loggare un utente e controllare se è loggato)
-- **/animals** (per ricevere tutti gli animali di un utente)
-- **/luoghi** (per ricevere tutti i luoghi)
-- **/logout** (per fare il logout e disattivare il cookie della sessione)
+# API Documentation for Flask Application
 
-# Documentazione singoli end-point
-A seguire istruzioni e documentazione per ogni singolo endpoint
-## **/register**
-### Metodo POST:
-Bisogna inviare in un json username, password e email formattati in questo modo:
-```
-{
-  "username": "usernameUtente",
-  "password": "passwordUtente",
-  "mail": "mailUtente@example.com"
-}
-```
-Se vengono inviati i dati di un utente già esistente non ne verrà creato uno nuovo ma l'utente verrà loggato.
+This document provides documentation for using the Flask API in the given application.
 
-Codici di errore:
-- **400** ❌: manca un parametro (username, email o password)
+## Endpoints
 
-Codici successo:
-- **200** ✅: registrazione/login avvenuto con successo
+The following endpoints are available:
 
-## **/login**
-### ***Metodo POST:***
-Bisogna inviare un json con username e password formattato in questo modo:
-```
-{
-  "username": "usernameUtente",
-  "password": "passwordUtente"
-}
-```
-L'utente verrà loggato e verrano generati e restituiti i cookie della sessione.
+1. `/register` - Register a new user
+2. `/login` - Log in a user
+3. `/animals` - Manage animal data
+4. `/luoghi` - Retrieve location information
+5. `/logout` - Log out the user
 
-Codici di errore:
-- **400** ❌: manca un parametro (username o password)
-- **401** ❌: username o password non corretti
+---
 
-Codici successo:
-- **200** ✅: login avvenuto con successo
-### ***Metodo GET:***
-Senza bisogno di inviare dati aggiuntivi (oltre ai cookie) restituirà se l'utente è loggato o meno
-- **401** ❌: utente non loggato
+## 1. /register
 
-Codici successo:
-- **200** ✅: utente loggato
+### Method
+
+- `POST`
+
+### Description
+
+This endpoint allows users to register by providing their username, password, and email.
+
+### Request Body
+
+| Field     | Type   | Required | Description           |
+| --------- | ------ | -------- | --------------------- |
+| username  | string | Yes      | The username          |
+| password  | string | Yes      | The password          |
+| mail      | string | Yes      | The email address     |
+
+### Responses
+
+| Status Code | Description                       |
+| ----------- | --------------------------------- |
+| 200         | Successful registration           |
+| 400         | Bad request (missing parameters)  |
+
+---
+
+## 2. /login
+
+### Methods
+
+- `GET`
+- `POST`
+
+### Description
+
+This endpoint handles user login functionality.
+
+### Request Body
+
+| Field     | Type   | Required | Description           |
+| --------- | ------ | -------- | --------------------- |
+| username  | string | Yes      | The username          |
+| password  | string | Yes      | The password          |
+
+### Responses
+
+| Status Code | Description                       |
+| ----------- | --------------------------------- |
+| 200         | Successful login                  |
+| 400         | Bad request (missing parameters)  |
+| 401         | Invalid username or password       |
+
+---
+
+## 3. /animals
+
+### Methods
+
+- `GET`
+- `POST`
+
+### Description
+
+This endpoint allows users to manage animal data.
+
+### Authentication
+
+Authentication is required for this endpoint. The user must be logged in.
+
+### GET Request
+
+This method retrieves animal data for the logged-in user.
+
+### Responses
+
+| Status Code | Description                     |
+| ----------- | ------------------------------- |
+| 200         | Successful retrieval of animals |
+| 401         | Not logged in                   |
+
+### POST Request
+
+This method allows the user to add new animal data.
+
+#### Request Body
+
+| Field             | Type   | Required | Description                            |
+| ----------------- | ------ | -------- | -------------------------------------- |
+| nome_animale      | string | Yes      | The name of the animal                  |
+| sesso             | string | Yes      | The gender of the animal                |
+| data_di_nascita   | string | Yes      | The date of birth of the animal         |
+| razza             | string | Yes      | The breed of the animal (case-insensitive) |
+
+#### Responses
+
+| Status Code | Description                           |
+| ----------- | ------------------------------------- |
+| 200         | Successful addition of animal data     |
+| 400         | Bad request (missing parameters)      |
+| 401         | Not logged in                         |
+
+---
+
+## 4. /luoghi
+
+### Methods
+
+- `GET`
+
+### Description
+
+This endpoint retrieves location information.
+
+### Authentication
+
+Authentication is required for this endpoint. The user must be logged in.
+
+### GET Request
+
+This method retrieves location data.
+
+### Responses
+
+| Status Code | Description                       |
+| ----------- | --------------------------------- |
+| 200         | Successful retrieval of locations |
+| 401         | Not logged in                     |
+
+---
+
+## 5. /logout
+
+### Methods
+
+- `POST`
+
+### Description
+
+This endpoint logs out the user by clearing the session.
+
+### Responses
+
+| Status Code | Description       |
+| ----------- | ----------------- |
+| 200         | Successful logout |
+
+---
+
+##
