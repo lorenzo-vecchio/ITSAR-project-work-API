@@ -1,166 +1,210 @@
-# API Documentation for Flask Application
+# API Usage Documentation
 
-This document provides documentation for using the Flask API in the given application.
+This documentation provides information about the usage of the API endpoints available in the provided Flask application. The API allows users to register, log in, manage animals, retrieve services, and log out.
 
+## Base URL
+
+The base URL for accessing the API endpoints is: `https://itsar-project-work-api.vercel.app/`
+
+```
 ## Endpoints
 
-The following endpoints are available:
+### Register
 
-1. `/register` - Register a new user
-2. `/login` - Log in a user
-3. `/animals` - Manage animal data
-4. `/luoghi` - Retrieve location information
-5. `/logout` - Log out the user
+**URL**: `/register`
 
----
+**Method**: `POST`
 
-## 1. /register
+This endpoint allows users to register an account.
 
-### Method
+#### Request Parameters
 
-- `POST`
+| Parameter | Type   | Description            |
+|-----------|--------|------------------------|
+| username  | string | The username of the user|
+| password  | string | The password of the user|
+| mail      | string | The email of the user   |
 
-### Description
+#### Request Example
 
-This endpoint allows users to register by providing their username, password, and email.
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{
+  "username": "john_doe",
+  "password": "password123",
+  "mail": "john.doe@example.com"
+}' http://localhost:5000/register
+```
 
-### Request Body
+#### Response Example
 
-| Field     | Type   | Required | Description           |
-| --------- | ------ | -------- | --------------------- |
-| username  | string | Yes      | The username          |
-| password  | string | Yes      | The password          |
-| mail      | string | Yes      | The email address     |
+```
+Status: 200 OK
+```
 
-### Responses
+### Login
 
-| Status Code | Description                       |
-| ----------- | --------------------------------- |
-| 200         | Successful registration           |
-| 400         | Bad request (missing parameters)  |
+**URL**: `/login`
 
----
+**Method**: `POST`
 
-## 2. /login
+This endpoint allows users to log in to their account.
 
-### Methods
+#### Request Parameters
 
-- `GET`
-- `POST`
+| Parameter | Type   | Description            |
+|-----------|--------|------------------------|
+| username  | string | The username of the user|
+| password  | string | The password of the user|
 
-### Description
+#### Request Example
 
-This endpoint handles user login functionality.
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{
+  "username": "john_doe",
+  "password": "password123"
+}' http://localhost:5000/login
+```
 
-### Request Body
+#### Response Example
 
-| Field     | Type   | Required | Description           |
-| --------- | ------ | -------- | --------------------- |
-| username  | string | Yes      | The username          |
-| password  | string | Yes      | The password          |
+```
+Status: 200 OK
+```
 
-### Responses
+### Logout
 
-| Status Code | Description                       |
-| ----------- | --------------------------------- |
-| 200         | Successful login                  |
-| 400         | Bad request (missing parameters)  |
-| 401         | Invalid username or password       |
+**URL**: `/logout`
 
----
+**Method**: `POST`
 
-## 3. /animals
+This endpoint allows users to log out of their account.
 
-### Methods
+#### Request Example
 
-- `GET`
-- `POST`
+```bash
+curl -X POST http://localhost:5000/logout
+```
 
-### Description
+#### Response Example
 
-This endpoint allows users to manage animal data.
+```
+Status: 200 OK
+```
 
-### Authentication
+### Animals
 
-Authentication is required for this endpoint. The user must be logged in.
+**URL**: `/animals`
 
-### GET Request
+**Method**: `GET`
 
-This method retrieves animal data for the logged-in user.
+This endpoint allows authenticated users to retrieve a list of animals associated with their account.
 
-### Responses
+#### Request Example
 
-| Status Code | Description                     |
-| ----------- | ------------------------------- |
-| 200         | Successful retrieval of animals |
-| 401         | Not logged in                   |
+```bash
+curl -X GET -H "Authorization: Basic base64(username:password)" http://localhost:5000/animals
+```
 
-### POST Request
+#### Response Example
 
-This method allows the user to add new animal data.
+```
+Status: 200 OK
 
-#### Request Body
+[
+  {
+    "nomeAnimale": "Max",
+    "sesso": "M",
+    "data_di_nascita": "2020-01-01",
+    "nomeRazza": "Labrador Retriever",
+    "nomeSpecie": "Dog"
+  },
+  {
+    "nomeAnimale": "Lucy",
+    "sesso": "F",
+    "data_di_nascita": "2019-05-10",
+    "nomeRazza": "Siamese",
+    "nomeSpecie": "Cat"
+  }
+]
+```
 
-| Field             | Type   | Required | Description                            |
-| ----------------- | ------ | -------- | -------------------------------------- |
-| nome_animale      | string | Yes      | The name of the animal                  |
-| sesso             | string | Yes      | The gender of the animal                |
-| data_di_nascita   | string | Yes      | The date of birth of the animal         |
-| razza             | string | Yes      | The breed of the animal (case-insensitive) |
+### Create Animal
 
-#### Responses
+**URL**: `/animals`
 
-| Status Code | Description                           |
-| ----------- | ------------------------------------- |
-| 200         | Successful addition of animal data     |
-| 400         | Bad request (missing parameters)      |
-| 401         | Not logged in                         |
+**Method**: `POST`
 
----
+This endpoint allows authenticated users to create a new animal associated with their account.
 
-## 4. /luoghi
+#### Request Parameters
 
-### Methods
+| Parameter         | Type   | Description                    |
+|-------------------|--------|--------------------------------
 
-- `GET`
+|
+| nome_animale      | string | The name of the animal          |
+| sesso             | string | The gender of the animal        |
+| data_di_nascita   | string | The date of birth of the animal |
+| razza             | string | The breed of the animal         |
 
-### Description
+#### Request Example
 
-This endpoint retrieves location information.
+```bash
+curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic base64(username:password)" -d '{
+  "nome_animale": "Max",
+  "sesso": "M",
+  "data_di_nascita": "2020-01-01",
+  "razza": "Labrador Retriever"
+}' http://localhost:5000/animals
+```
 
-### Authentication
+#### Response Example
 
-Authentication is required for this endpoint. The user must be logged in.
+```
+Status: 200 OK
+```
 
-### GET Request
+### Services
 
-This method retrieves location data.
+**URL**: `/servizi`
 
-### Responses
+**Method**: `GET`
 
-| Status Code | Description                       |
-| ----------- | --------------------------------- |
-| 200         | Successful retrieval of locations |
-| 401         | Not logged in                     |
+This endpoint allows authenticated users to retrieve a list of services.
 
----
+#### Request Example
 
-## 5. /logout
+```bash
+curl -X GET -H "Authorization: Basic base64(username:password)" http://localhost:5000/servizi
+```
 
-### Methods
+#### Response Example
 
-- `POST`
+```
+Status: 200 OK
 
-### Description
+[
+  {
+    "nomeLuogo": "Pet Clinic",
+    "latitudine": "40.7128",
+    "longitudine": "-74.0060",
+    "nomeTipo": "Veterinary",
+    "nomeLocalita": "New York City",
+    "provincia": "New York",
+    "regione": "New York"
+  },
+  {
+    "nomeLuogo": "Dog Park",
+    "latitudine": "34.0522",
+    "longitudine": "-118.2437",
+    "nomeTipo": "Park",
+    "nomeLocalita": "Los Angeles",
+    "provincia": "California",
+    "regione": "California"
+  }
+]
+```
 
-This endpoint logs out the user by clearing the session.
+## Conclusion
 
-### Responses
-
-| Status Code | Description       |
-| ----------- | ----------------- |
-| 200         | Successful logout |
-
----
-
-##
+This concludes the API usage documentation for the provided Flask application. The endpoints described above allow users to register, log in, manage animals, retrieve services, and log out. Please ensure to include the appropriate authentication headers when making requests to the authenticated endpoints.
