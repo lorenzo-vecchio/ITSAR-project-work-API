@@ -4,11 +4,19 @@ This documentation provides information about the usage of the API endpoints ava
 
 ## Base URL
 
-The base URL for accessing the API endpoints is: `https://itsar-project-work-api.vercel.app/`
+The base URL for accessing the API endpoints is: `http://localhost:5000/`
 
 ## Endpoints
 
-### Register
+The following endpoints are available in the API:
+
+- `/register` - Register a new user account
+- `/login` - Log in to a user account
+- `/logout` - Log out of the current user account
+- `/animals` - Manage animals associated with the user account
+- `/servizi` - Retrieve services
+
+## Register
 
 **URL**: `/register`
 
@@ -16,7 +24,7 @@ The base URL for accessing the API endpoints is: `https://itsar-project-work-api
 
 This endpoint allows users to register an account.
 
-#### Request Parameters
+### Request Parameters
 
 | Parameter | Type   | Description            |
 |-----------|--------|------------------------|
@@ -24,23 +32,26 @@ This endpoint allows users to register an account.
 | password  | string | The password of the user|
 | mail      | string | The email of the user   |
 
-#### Request Example
+### Request Example
 
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{
+```http
+POST /register HTTP/1.1
+Content-Type: application/json
+
+{
   "username": "john_doe",
   "password": "password123",
   "mail": "john.doe@example.com"
-}' http://localhost:5000/register
+}
 ```
 
-#### Response Example
+### Response Example
 
 ```
-Status: 200 OK
+HTTP/1.1 200 OK
 ```
 
-### Login
+## Login
 
 **URL**: `/login`
 
@@ -48,29 +59,32 @@ Status: 200 OK
 
 This endpoint allows users to log in to their account.
 
-#### Request Parameters
+### Request Parameters
 
 | Parameter | Type   | Description            |
 |-----------|--------|------------------------|
 | username  | string | The username of the user|
 | password  | string | The password of the user|
 
-#### Request Example
+### Request Example
 
-```bash
-curl -X POST -H "Content-Type: application/json" -d '{
+```http
+POST /login HTTP/1.1
+Content-Type: application/json
+
+{
   "username": "john_doe",
   "password": "password123"
-}' http://localhost:5000/login
+}
 ```
 
-#### Response Example
+### Response Example
 
 ```
-Status: 200 OK
+HTTP/1.1 200 OK
 ```
 
-### Logout
+## Logout
 
 **URL**: `/logout`
 
@@ -78,19 +92,19 @@ Status: 200 OK
 
 This endpoint allows users to log out of their account.
 
-#### Request Example
+### Request Example
 
-```bash
-curl -X POST http://localhost:5000/logout
+```http
+POST /logout HTTP/1.1
 ```
 
-#### Response Example
+### Response Example
 
 ```
-Status: 200 OK
+HTTP/1.1 200 OK
 ```
 
-### Animals
+## Animals
 
 **URL**: `/animals`
 
@@ -98,16 +112,18 @@ Status: 200 OK
 
 This endpoint allows authenticated users to retrieve a list of animals associated with their account.
 
-#### Request Example
+### Request Example
 
-```bash
-curl -X GET -H "Authorization: Basic base64(username:password)" http://localhost:5000/animals
+```http
+GET /animals HTTP/1.1
+Authorization: Basic base64(username:password)
 ```
 
-#### Response Example
+### Response Example
 
 ```
-Status: 200 OK
+HTTP/1.1 200 OK
+Content-Type: application/json
 
 [
   {
@@ -127,7 +143,7 @@ Status: 200 OK
 ]
 ```
 
-### Create Animal
+## Create Animal
 
 **URL**: `/animals`
 
@@ -135,35 +151,39 @@ Status: 200 OK
 
 This endpoint allows authenticated users to create a new animal associated with their account.
 
-#### Request Parameters
+### Request Parameters
 
 | Parameter         | Type   | Description                    |
-|-------------------|--------|--------------------------------
-
-|
+|-------------------|--------|--------------------------------|
 | nome_animale      | string | The name of the animal          |
 | sesso             | string | The gender of the animal        |
-| data_di_nascita   | string | The date of birth of the animal |
+| data
+
+_di_nascita   | string | The date of birth of the animal |
 | razza             | string | The breed of the animal         |
 
-#### Request Example
+### Request Example
 
-```bash
-curl -X POST -H "Content-Type: application/json" -H "Authorization: Basic base64(username:password)" -d '{
+```http
+POST /animals HTTP/1.1
+Content-Type: application/json
+Authorization: Basic base64(username:password)
+
+{
   "nome_animale": "Max",
   "sesso": "M",
   "data_di_nascita": "2020-01-01",
   "razza": "Labrador Retriever"
-}' http://localhost:5000/animals
+}
 ```
 
-#### Response Example
+### Response Example
 
 ```
-Status: 200 OK
+HTTP/1.1 200 OK
 ```
 
-### Services
+## Services
 
 **URL**: `/servizi`
 
@@ -171,16 +191,18 @@ Status: 200 OK
 
 This endpoint allows authenticated users to retrieve a list of services.
 
-#### Request Example
+### Request Example
 
-```bash
-curl -X GET -H "Authorization: Basic base64(username:password)" http://localhost:5000/servizi
+```http
+GET /servizi HTTP/1.1
+Authorization: Basic base64(username:password)
 ```
 
-#### Response Example
+### Response Example
 
 ```
-Status: 200 OK
+HTTP/1.1 200 OK
+Content-Type: application/json
 
 [
   {
