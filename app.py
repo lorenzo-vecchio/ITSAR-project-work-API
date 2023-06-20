@@ -4,10 +4,11 @@ import pymysql.cursors
 from data import DatabaseConnector
 
 app = Flask(__name__)
-app.config['SESSION_COOKIE_SECURE'] = True
-app.config['SESSION_COOKIE_HTTPONLY'] = True
-app.config['SESSION_COOKIE_SAMESITE'] = "None"
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": ["https://itsar-project-work-react.vercel.app/"]}}, allow_headers="*")
+# app.config['SESSION_COOKIE_SECURE'] = True
+# app.config['SESSION_COOKIE_HTTPONLY'] = True
+# app.config['SESSION_COOKIE_SAMESITE'] = "None"
+app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": ["http://localhost:3000"]}}, allow_headers="*")
 
 app.secret_key = 'fdfd'
 
