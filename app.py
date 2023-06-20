@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, make_response, session
+from flask import Flask, request, jsonify, make_response, session, Response
 from flask_cors import CORS, cross_origin
 import pymysql.cursors
 from data import DatabaseConnector
