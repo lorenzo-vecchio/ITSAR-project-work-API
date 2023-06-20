@@ -6,7 +6,6 @@ This documentation provides information about the usage of the API endpoints ava
 
 The base URL for accessing the API endpoints is: `https://itsar-project-work-api.vercel.app/`
 
-```
 ## Endpoints
 
 ### Register
