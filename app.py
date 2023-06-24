@@ -159,11 +159,12 @@ def preferiti():
     data.connect()
     if 'username' in session and 'user_id' in session:
         query = """
-        SELECT s.nomeLuogo, l.nomeLocalita, l.provincia
-        from utenti as u INNER JOIN preferiti as p on u.id = p.id_utente 
-        INNER JOIN servizi as s on p.id_servizi = s.id 
-        INNER JOIN localita as l on s.id_localita = l.id
-        where u.id=%s;
+        SELECT s.id, s.nomeLuogo, l.nomeLocalita, l.provincia
+    FROM utenti AS u
+    INNER JOIN preferiti AS p ON u.id = p.id_utente 
+    INNER JOIN servizi AS s ON p.id_servizi = s.id 
+    INNER JOIN localita AS l ON s.id_localita = l.id
+    WHERE u.id = %s;
         """
         rows = data.execute_query(query, (session.get('user_id'),))
         luoghi_preferiti = []
