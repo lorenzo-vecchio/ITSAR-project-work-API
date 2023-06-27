@@ -110,6 +110,7 @@ def animals():
                 sesso = request.json['sesso']
                 data_di_nascita = request.json['data_di_nascita']
                 razza = request.json['razza'].lower()
+                peso = request.json['peso']
             except KeyError:
                 return make_response('ERROR: Missing data for animal creation', 400)
             result = data.execute_query("SELECT id FROM razze WHERE nomeRazza = %s", (razza,))
@@ -118,10 +119,10 @@ def animals():
             else:
                 return make_response('ERROR: Razza not found', 400)
             query = """
-            INSERT INTO animali (nomeAnimale, sesso, data_di_nascita, id_razza, id_utente)
-            VALUES (%s, %s, %s, %s, %s);
+            INSERT INTO animali (nomeAnimale, sesso, data_di_nascita, id_razza, id_utente, peso)
+            VALUES (%s, %s, %s, %s, %s, %s);
             """
-            data.execute_insert(query, (nome_animale, sesso, data_di_nascita, id_razza, session.get('user_id')))
+            data.execute_insert(query, (nome_animale, sesso, data_di_nascita, id_razza, session.get('user_id'), str(peso)))
             return make_response('Animal created', 200)
         if request.method == 'DELETE':
             try:
@@ -205,7 +206,6 @@ def promemoria():
         WHERE u.id = %s AND pm.data_e_ora >= CURDATE()
         GROUP BY pm.id, pm.titolo, pm.descrizione, pm.data_e_ora
         ORDER BY pm.data_e_ora;
-
         """
         rows = data.execute_query(query, (session.get('user_id'),))
         promemorias = []
