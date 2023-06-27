@@ -97,7 +97,7 @@ def animals():
                     'id': row[0],
                     'nome_animale': row[1],
                     'sesso': row[2],
-                    'data_di_nascita': row[3],
+                    'data_di_nascita': row[3].strftime("%Y-%m-%d"),
                     'peso': row[4],
                     'nome_razza': row[5],
                     'nome_specie': row[6]
@@ -214,7 +214,7 @@ def promemoria():
                 'id': row[0],
                 'titolo': row[1],
                 'descrizione': row[2],
-                'data_ora': row[3],
+                'data_ora': row[3].strftime("%Y-%m-%dT%H:%M"),
                 'animali': row[4]
             }
             promemorias.append(promemoria)
