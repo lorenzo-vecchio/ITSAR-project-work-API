@@ -144,7 +144,7 @@ def servizi():
         if request.method == 'GET':
             try:
                 place_id = request.json['id']
-            except KeyError:
+            except:
                 query = """
                 SELECT s.nomeLuogo, s.latitudine, s.longitudine, ts.nomeTipo, l.nomeLocalita, l.provincia, l.regione
                 FROM servizi AS s
