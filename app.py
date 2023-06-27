@@ -142,28 +142,41 @@ def servizi():
     data.connect()
     if 'username' in session and 'user_id' in session:
         if request.method == 'GET':
+            try:
+                place_id = request.json['id']
+            except KeyError:
+                query = """
+                SELECT s.nomeLuogo, s.latitudine, s.longitudine, ts.nomeTipo, l.nomeLocalita, l.provincia, l.regione
+                FROM servizi AS s
+                JOIN tipologia_servizi AS ts ON s.id_tipo_servizio = ts.id
+                JOIN localita AS l ON s.id_localita = l.id;
+                """
+                rows = data.execute_query(query)
+                if rows is None:
+                    return make_response('Error retrieving data from the database', 500)
+                servizi = []
+                for row in rows:
+                    servizio = {
+                        'nome': row[0],
+                        'latitudine': row[1],
+                        'longitudine': row[2],
+                        'tipo': row[3],
+                        'localita': row[4],
+                        'provincia': row[5],
+                        'regione': row[6]
+                    }
+                    servizi.append(servizio)
+                return jsonify(servizi)
             query = """
-            SELECT s.nomeLuogo, s.latitudine, s.longitudine, ts.nomeTipo, l.nomeLocalita, l.provincia, l.regione
-            FROM servizi AS s
-            JOIN tipologia_servizi AS ts ON s.id_tipo_servizio = ts.id
-            JOIN localita AS l ON s.id_localita = l.id;
+            SELECT nomeLuogo, latitudine, longitudine, id_tipo_servizio, id_localita FROM servizi WHERE id = %s
             """
-            rows = data.execute_query(query)
-            if rows is None:
-                return make_response('Error retrieving data from the database', 500)
-            servizi = []
-            for row in rows:
-                servizio = {
-                    'nome': row[0],
-                    'latitudine': row[1],
-                    'longitudine': row[2],
-                    'tipo': row[3],
-                    'localita': row[4],
-                    'provincia': row[5],
-                    'regione': row[6]
-                }
-                servizi.append(servizio)
-            return jsonify(servizi)
+            row = data.execute_query(query, (place_id))[0]
+            place = {
+                'nome': row[0],
+                'lat': row[1],
+                'long': row[2],
+            }
+            return jsonify(place)
     return make_response('not logged', 401)
 
 @app.route("/preferiti", methods=['GET'])
