@@ -88,7 +88,7 @@ def animals():
             FROM animali 
             INNER JOIN razze ON animali.id_razza = razze.id
             INNER JOIN specie ON razze.id_specie = specie.id
-            WHERE animali.id_utente = %n;
+            WHERE animali.id_utente = %s;
             """
             rows = data.execute_query(query, (session.get('user_id'),))
             animals = []
