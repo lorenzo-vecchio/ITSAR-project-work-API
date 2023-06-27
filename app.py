@@ -146,7 +146,7 @@ def servizi():
                 place_id = request.json['id']
             except:
                 query = """
-                SELECT s.nomeLuogo, s.latitudine, s.longitudine, ts.nomeTipo, l.nomeLocalita, l.provincia, l.regione
+                SELECT s.nomeLuogo, s.latitudine, s.longitudine, ts.nomeTipo, l.nomeLocalita, l.provincia, l.regione, s.id
                 FROM servizi AS s
                 JOIN tipologia_servizi AS ts ON s.id_tipo_servizio = ts.id
                 JOIN localita AS l ON s.id_localita = l.id;
@@ -163,7 +163,8 @@ def servizi():
                         'tipo': row[3],
                         'localita': row[4],
                         'provincia': row[5],
-                        'regione': row[6]
+                        'regione': row[6],
+                        'id': row[7]
                     }
                     servizi.append(servizio)
                 return jsonify(servizi)
