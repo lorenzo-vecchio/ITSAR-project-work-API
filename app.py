@@ -77,28 +77,30 @@ def login():
 
         
         
-@app.route("/animals", methods=['GET', 'POST'])
+@app.route("/animals", methods=['GET', 'POST', 'DELETE'])
 def animals():
     data = DatabaseConnector(db_connection_info)
     data.connect()
     if 'username' in session and 'user_id' in session:
         if request.method == 'GET':
             query = """
-            SELECT animali.nomeAnimale, animali.sesso, animali.data_di_nascita, razze.nomeRazza, specie.nomeSpecie
-            FROM animali
+            SELECT animali.id, animali.nomeAnimale, animali.sesso, animali.data_di_nascita, animali.peso, razze.nomeRazza, specie.nomeSpecie
+            FROM animali 
             INNER JOIN razze ON animali.id_razza = razze.id
             INNER JOIN specie ON razze.id_specie = specie.id
-            WHERE animali.id_utente = %s;
+            WHERE animali.id_utente = %n;
             """
             rows = data.execute_query(query, (session.get('user_id'),))
             animals = []
             for row in rows:
                 animal = {
-                    'nomeAnimale': row[0],
-                    'sesso': row[1],
-                    'data_di_nascita': row[2],
-                    'nomeRazza': row[3],
-                    'nomeSpecie': row[4]
+                    'id': row[0],
+                    'nome_animale': row[1],
+                    'sesso': row[2],
+                    'data_di_nascita': row[3],
+                    'peso': row[4],
+                    'nome_razza': row[5],
+                    'nome_specie': row[6]
                 }
                 animals.append(animal)
             return jsonify(animals)
@@ -121,6 +123,16 @@ def animals():
             """
             data.execute_insert(query, (nome_animale, sesso, data_di_nascita, id_razza, session.get('user_id')))
             return make_response('Animal created', 200)
+        if request.method == 'DELETE':
+            try:
+                id_animale = request.json['id']
+            except KeyError:
+                return make_response('Non hai inserito i parametri corretti', 400)
+            query = """
+            DELETE FROM animali WHERE id = %s and id_utente = %s; 
+            """
+            data.execute_insert(query, (id_animale, session.get('user_id'),))
+            return make_response('animale eliminato', 200)
     return make_response('Not logged', 401)
 
 @app.route("/servizi", methods=['GET'])
@@ -141,11 +153,11 @@ def servizi():
             servizi = []
             for row in rows:
                 servizio = {
-                    'nomeLuogo': row[0],
+                    'nome': row[0],
                     'latitudine': row[1],
                     'longitudine': row[2],
-                    'nomeTipo': row[3],
-                    'nomeLocalita': row[4],
+                    'tipo': row[3],
+                    'localita': row[4],
                     'provincia': row[5],
                     'regione': row[6]
                 }
