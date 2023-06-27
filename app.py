@@ -165,6 +165,32 @@ def servizi():
             return jsonify(servizi)
     return make_response('not logged', 401)
 
+@app.route("/preferiti", methods=['GET'])
+def preferiti():
+    data = DatabaseConnector(db_connection_info)
+    data.connect()
+    if 'username' in session and 'user_id' in session:
+        query = """
+        SELECT s.id, s.nomeLuogo, l.nomeLocalita, l.provincia
+    FROM utenti AS u
+    INNER JOIN preferiti AS p ON u.id = p.id_utente 
+    INNER JOIN servizi AS s ON p.id_servizi = s.id 
+    INNER JOIN localita AS l ON s.id_localita = l.id
+    WHERE u.id = %s;
+        """
+        rows = data.execute_query(query, (session.get('user_id'),))
+        luoghi_preferiti = []
+        for row in rows:
+            luogo_preferito = {
+                'id': row[0],
+                'nome_luogo': row[1],
+                'nome_localita': row[2],
+                'provincia': row[3]
+            }
+            luoghi_preferiti.append(luogo_preferito)
+        return jsonify(luoghi_preferiti)
+    return make_response('not logged', 401)
+
 
 @app.route("/logout", methods=['POST'])
 def logout():
