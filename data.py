@@ -39,14 +39,13 @@ class DatabaseConnector:
         except pymysql.Error as e:
             print(f"Error executing query: {e}")
 
-    
-    
     def execute_insert(self, query, values):
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query, values)
                 self.connection.commit()
                 print("Insert successful.")
+                return cursor.lastrowid
         except pymysql.Error as e:
             print(f"Error executing insert query: {e}")
             self.connection.rollback()

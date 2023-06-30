@@ -246,9 +246,14 @@ def promemoria():
             INSERT INTO promemoria (titolo, descrizione, data_e_ora)
             VALUES (%s, %s, %s);
             """
-            data.execute_insert(query, (titolo, descrizione, data_ora))
-            
-
+            promemoria_id = data.execute_insert(query, (titolo, descrizione, data_ora))
+            for animale in animali:
+                query = """
+                INSERT INTO riferimento(id_promemoria, id_animale)
+                values (%s,%s);
+                """
+                data.execute_insert(query, (promemoria_id, animale))
+            return make_response('promemoria added', 200)
     return make_response('not logged', 401)
 
 
