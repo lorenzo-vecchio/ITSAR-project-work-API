@@ -256,6 +256,34 @@ def promemoria():
             return make_response('promemoria added', 200)
     return make_response('not logged', 401)
 
+@app.route("/promemoria", methods=['GET'])
+def promemoria():
+    data = DatabaseConnector(db_connection_info)
+    data.connect()
+    if 'username' in session and 'user_id' in session:
+        query = """
+        SELECT pm.id, pm.titolo, pm.descrizione, pm.data_e_ora, GROUP_CONCAT(a.nomeAnimale SEPARATOR ', ') AS animali
+        FROM promemoria AS pm
+        INNER JOIN riferimento AS r ON pm.id = r.id_promemoria
+        INNER JOIN animali AS a ON r.id_animale = a.id
+        INNER JOIN utenti AS u ON a.id_utente = u.id
+        WHERE u.id = %s AND pm.data_e_ora >= CURDATE()
+        GROUP BY pm.id, pm.titolo, pm.descrizione, pm.data_e_ora
+        ORDER BY pm.data_e_ora;
+        """
+        rows = data.execute_query(query, (session.get('user_id'),))
+        promemorias = []
+        for row in rows:
+            promemoria = {
+                'id': row[0],
+                'titolo': row[1],
+                'descrizione': row[2],
+                'data_ora': row[3].strftime("%Y-%m-%dT%H:%M"),
+                'animali': row[4]
+            }
+            promemorias.append(promemoria)
+        return jsonify(promemorias)
+    return make_response('not logged', 401)
 
 @app.route("/logout", methods=['POST'])
 def logout():
