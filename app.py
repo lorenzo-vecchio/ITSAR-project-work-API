@@ -256,33 +256,44 @@ def promemoria():
             return make_response('promemoria added', 200)
     return make_response('not logged', 401)
 
-@app.route("/promemoria", methods=['GET'])
-def promemoria():
+@app.route("/user", methods=['POST'])
+def user():
     data = DatabaseConnector(db_connection_info)
     data.connect()
     if 'username' in session and 'user_id' in session:
-        query = """
-        SELECT pm.id, pm.titolo, pm.descrizione, pm.data_e_ora, GROUP_CONCAT(a.nomeAnimale SEPARATOR ', ') AS animali
-        FROM promemoria AS pm
-        INNER JOIN riferimento AS r ON pm.id = r.id_promemoria
-        INNER JOIN animali AS a ON r.id_animale = a.id
-        INNER JOIN utenti AS u ON a.id_utente = u.id
-        WHERE u.id = %s AND pm.data_e_ora >= CURDATE()
-        GROUP BY pm.id, pm.titolo, pm.descrizione, pm.data_e_ora
-        ORDER BY pm.data_e_ora;
-        """
-        rows = data.execute_query(query, (session.get('user_id'),))
-        promemorias = []
-        for row in rows:
-            promemoria = {
-                'id': row[0],
-                'titolo': row[1],
-                'descrizione': row[2],
-                'data_ora': row[3].strftime("%Y-%m-%dT%H:%M"),
-                'animali': row[4]
+        if request.method == 'POST':
+            nome = request.json['nome']
+            cognome = request.json['cognome']
+            username = request.json['username']
+            email = request.json['email']
+            password = request.json['password']
+            query = """
+            UPDATE `utenti`
+            SET `userName` = '%s',
+                `password` = '%s',
+                `nome` = '%s',
+                `cognome` = '%s',
+                `email` = '%s'
+            WHERE `id` = %s;
+
+            """
+            data.execute_query(query, (username, password, nome, cognome, email, session.get('user_id'),))
+            return make_response('update successful', 200)
+        if request.method == 'GET':
+            query = """
+            SELECT *
+            FROM `utenti`
+            WHERE `id` = %s;
+            """
+            row = data.execute_query(query, (session.get('user_id'),))[0]
+            result = {
+                'username': row[0],
+                'password': row[1],
+                'nome': row[2],
+                'cognome': row[3],
+                'email': row[4],
             }
-            promemorias.append(promemoria)
-        return jsonify(promemorias)
+            return jsonify(result)     
     return make_response('not logged', 401)
 
 @app.route("/logout", methods=['POST'])
