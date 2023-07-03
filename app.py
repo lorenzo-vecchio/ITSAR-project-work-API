@@ -256,7 +256,7 @@ def promemoria():
             return make_response('promemoria added', 200)
     return make_response('not logged', 401)
 
-@app.route("/user", methods=['POST'])
+@app.route("/user", methods=['POST', 'GET'])
 def user():
     data = DatabaseConnector(db_connection_info)
     data.connect()
