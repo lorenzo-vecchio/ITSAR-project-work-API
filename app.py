@@ -287,11 +287,11 @@ def user():
             """
             row = data.execute_query(query, (session.get('user_id'),))[0]
             result = {
-                'username': row[0],
-                'password': row[1],
-                'nome': row[2],
-                'cognome': row[3],
-                'email': row[4],
+                'username': row[1],
+                'password': row[2],
+                'nome': row[3],
+                'cognome': row[4],
+                'email': row[5],
             }
             return jsonify(result)     
     return make_response('not logged', 401)
