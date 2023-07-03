@@ -262,11 +262,11 @@ def user():
     data.connect()
     if 'username' in session and 'user_id' in session:
         if request.method == 'POST':
-            nome = request.json['nome']
-            cognome = request.json['cognome']
-            username = request.json['username']
-            email = request.json['email']
-            password = request.json['password']
+            nome = request.json.get('nome', '')
+            cognome = request.json.get('cognome', '')
+            username = request.json.get('username', '')
+            email = request.json.get('email', '')
+            password = request.json.get('password', '')
             query = """
             UPDATE `utenti`
             SET `userName` = '%s',
