@@ -265,11 +265,12 @@ def user():
     data.connect()
     if 'username' in session and 'user_id' in session:
         if request.method == 'POST':
-            nome = request.json('nome', None)
-            cognome = request.json('cognome', None)
-            username = request.json('username', None)
-            email = request.json('email', None)
-            password = request.json('password', None)
+            nome = request.json.get('nome', None)
+            cognome = request.json.get('cognome', None)
+            username = request.json.get('username', None)
+            email = request.json.get('email', None)
+            password = request.json.get('password', None)
+
             query = """
             UPDATE `utenti`
             SET `userName` = %s,
@@ -278,10 +279,18 @@ def user():
                 `cognome` = %s,
                 `email` = %s
             WHERE `id` = %s;
-
             """
+
+            # Convert blank fields to None
+            nome = None if nome == "" else nome
+            cognome = None if cognome == "" else cognome
+            username = None if username == "" else username
+            email = None if email == "" else email
+            password = None if password == "" else password
+
             data.execute_query(query, (username, password, nome, cognome, email, session.get('user_id'),))
             return make_response('update successful', 200)
+
         if request.method == 'GET':
             query = """
             SELECT *
@@ -296,8 +305,10 @@ def user():
                 'cognome': row[4],
                 'email': row[5],
             }
-            return jsonify(result)     
+            return jsonify(result)
+    
     return make_response('not logged', 401)
+
 
 @app.route("/logout", methods=['POST'])
 def logout():
