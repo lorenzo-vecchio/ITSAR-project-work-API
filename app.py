@@ -259,6 +259,45 @@ def promemoria():
             return make_response('promemoria added', 200)
     return make_response('not logged', 401)
 
+@app.route("/user", methods=['POST', 'GET'])
+def user():
+    data = DatabaseConnector(db_connection_info)
+    data.connect()
+    if 'username' in session and 'user_id' in session:
+        if request.method == 'POST':
+            nome = request.json.get('nome', ' ')
+            cognome = request.json.get('cognome', ' ')
+            username = request.json.get('username', ' ')
+            email = request.json.get('email', ' ')
+            password = request.json.get('password', ' ')
+            query = """
+            UPDATE `utenti`
+            SET `userName` = '%s',
+                `password` = '%s',
+                `nome` = '%s',
+                `cognome` = '%s',
+                `email` = '%s'
+            WHERE `id` = %s;
+
+            """
+            data.execute_query(query, (username, password, nome, cognome, email, session.get('user_id'),))
+            return make_response('update successful', 200)
+        if request.method == 'GET':
+            query = """
+            SELECT *
+            FROM `utenti`
+            WHERE `id` = %s;
+            """
+            row = data.execute_query(query, (session.get('user_id'),))[0]
+            result = {
+                'username': row[1],
+                'password': row[2],
+                'nome': row[3],
+                'cognome': row[4],
+                'email': row[5],
+            }
+            return jsonify(result)     
+    return make_response('not logged', 401)
 
 @app.route("/logout", methods=['POST'])
 def logout():
