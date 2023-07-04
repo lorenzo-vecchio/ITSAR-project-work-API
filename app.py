@@ -130,7 +130,10 @@ def animals():
             except KeyError:
                 return make_response('Non hai inserito i parametri corretti', 400)
             query = """
-            DELETE FROM animali WHERE id = %s and id_utente = %s; 
+            DELETE a, r
+            FROM animali a
+            LEFT JOIN riferimento r ON r.id_animale = a.id
+            WHERE a.id = %s AND a.id_utente = %s;
             """
             data.execute_insert(query, (id_animale, session.get('user_id'),))
             return make_response('animale eliminato', 200)
