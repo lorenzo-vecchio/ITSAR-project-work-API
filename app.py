@@ -288,7 +288,7 @@ def user():
             email = None if email == "" else email
             password = None if password == "" else password
 
-            data.execute_query(query, (username, password, nome, cognome, email, session.get('user_id'),))
+            data.execute_insert(query, (username, password, nome, cognome, email, session.get('user_id'),))
             return make_response('update successful', 200)
 
         if request.method == 'GET':
