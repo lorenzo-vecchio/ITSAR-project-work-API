@@ -272,11 +272,11 @@ def user():
             password = request.json.get('password', ' ')
             query = """
             UPDATE `utenti`
-            SET `userName` = '%s',
-                `password` = '%s',
-                `nome` = '%s',
-                `cognome` = '%s',
-                `email` = '%s'
+            SET `userName` = %s,
+                `password` = %s,
+                `nome` = %s,
+                `cognome` = %s,
+                `email` = %s
             WHERE `id` = %s;
 
             """
