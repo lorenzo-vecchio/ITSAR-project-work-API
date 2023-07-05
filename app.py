@@ -158,24 +158,11 @@ def servizi():
                 place_id = request.json['id']
             except:
                 query = """
-                SELECT
-                s.nomeLuogo,
-                s.latitudine,
-                s.longitudine,
-                ts.nomeTipo,
-                l.nomeLocalita,
-                l.provincia,
-                l.regione,
-                s.id,
-                IF(p.id_utente IS NOT NULL, 1, 0) AS is_favorite
-                FROM
-                servizi AS s
-                JOIN
-                tipologia_servizi AS ts ON s.id_tipo_servizio = ts.id
-                JOIN
-                localita AS l ON s.id_localita = l.id
-                LEFT JOIN
-                preferiti AS p ON s.id = p.id_servizi AND p.id_utente = %s;
+                SELECT s.nomeLuogo, s.latitudine, s.longitudine, ts.nomeTipo, l.nomeLocalita, l.provincia, l.regione, s.id, IF(p.id IS NULL, 0, p.id) AS favorite_id
+                FROM servizi AS s
+                JOIN tipologia_servizi AS ts ON s.id_tipo_servizio = ts.id
+                JOIN localita AS l ON s.id_localita = l.id
+                LEFT JOIN preferiti AS p ON s.id = p.id_servizi AND p.id_utente = %s;
                 """
                 rows = data.execute_query(query, (session.get('user_id')))
                 if rows is None:
@@ -191,7 +178,8 @@ def servizi():
                         'provincia': row[5],
                         'regione': row[6],
                         'id': row[7],
-                        'favorite': True if row[8] == 1 else False
+                        'favorite': False if row[8] == 0 else True,
+                        'favorite_id': row[8]
                     }
                     servizi.append(servizio)
                 return jsonify(servizi)
