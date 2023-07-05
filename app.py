@@ -136,6 +136,11 @@ def animals():
             WHERE a.id = %s AND a.id_utente = %s;
             """
             data.execute_insert(query, (id_animale, session.get('user_id'),))
+            query = """
+            DELETE FROM animali
+            WHERE id = %s AND id_utente = %s;
+            """
+            data.execute_insert(query, (id_animale, session.get('user_id'),))
             return make_response('animale eliminato', 200)
     return make_response('Not logged', 401)
 
