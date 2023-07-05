@@ -132,7 +132,7 @@ def animals():
             query = """
             SET FOREIGN_KEY_CHECKS = 0;
             """
-            data.execute_insert(query)
+            data.execute_query(query)
             query = """
             DELETE FROM riferimento WHERE id_animale = %s;
             """
@@ -144,7 +144,7 @@ def animals():
             query = """
             SET FOREIGN_KEY_CHECKS = 1;
             """
-            data.execute_insert(query)
+            data.execute_query(query)
             return make_response('animale eliminato', 200)
     return make_response('Not logged', 401)
 
