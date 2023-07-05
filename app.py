@@ -202,7 +202,7 @@ def preferiti():
     if 'username' in session and 'user_id' in session:
         if request.method == 'GET':
             query = """
-            SELECT s.id, s.nomeLuogo, l.nomeLocalita, l.provincia
+            SELECT s.id, s.nomeLuogo, l.nomeLocalita, l.provincia, p.id
             FROM utenti AS u
             INNER JOIN preferiti AS p ON u.id = p.id_utente 
             INNER JOIN servizi AS s ON p.id_servizi = s.id 
@@ -216,7 +216,8 @@ def preferiti():
                     'id': row[0],
                     'nome_luogo': row[1],
                     'nome_localita': row[2],
-                    'provincia': row[3]
+                    'provincia': row[3],
+                    'id_preferiti': row[4]
                 }
                 luoghi_preferiti.append(luogo_preferito)
             return jsonify(luoghi_preferiti)
