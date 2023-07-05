@@ -207,7 +207,7 @@ def servizi():
             return jsonify(place)
     return make_response('not logged', 401)
 
-@app.route("/preferiti", methods=['GET', 'POST'])
+@app.route("/preferiti", methods=['GET', 'POST', 'DELETE'])
 def preferiti():
     data = DatabaseConnector(db_connection_info)
     data.connect()
@@ -242,7 +242,18 @@ def preferiti():
             VALUES (%s, %s);
             """
             data.execute_insert(query, (session.get('user_id'), place_id))
-            return make_response('SUCCESS: place added', 200)
+            return make_response('SUCCESS: favorite added', 200)
+        if request.method == 'DELETE':
+            try:
+                pref_id = request.json['id']
+            except KeyError:
+                return make_response('ERROR: missing id', 400)
+            query = """
+            DELETE FROM preferiti
+            WHERE id_utente = %s AND id = %s;
+            """
+            data.execute_query(query, (session.get('user_id'), pref_id))
+            return make_response('SUCCESS: favorite removed', 200)
     return make_response('not logged', 401)
 
 @app.route("/promemoria", methods=['GET', 'POST'])
