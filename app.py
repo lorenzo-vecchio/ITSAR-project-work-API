@@ -131,14 +131,20 @@ def animals():
                 return make_response('Non hai inserito i parametri corretti', 400)
             query = """
             SET FOREIGN_KEY_CHECKS = 0;
-
-            DELETE FROM riferimento WHERE id_animale = %s;
-            DELETE FROM animali WHERE id = %s AND id_utente = %s;
-
-            SET FOREIGN_KEY_CHECKS = 1;
-
             """
-            data.execute_insert(query, (id_animale, id_animale, session.get('user_id'),))
+            data.execute_insert(query)
+            query = """
+            DELETE FROM riferimento WHERE id_animale = %s;
+            """
+            data.execute_insert(query, (id_animale))
+            query = """
+            DELETE FROM animali WHERE id = %s AND id_utente = %s;
+            """
+            data.execute_insert(query, (id_animale, session.get('user_id'),))
+            query = """
+            SET FOREIGN_KEY_CHECKS = 1;
+            """
+            data.execute_insert(query)
             return make_response('animale eliminato', 200)
     return make_response('Not logged', 401)
 
