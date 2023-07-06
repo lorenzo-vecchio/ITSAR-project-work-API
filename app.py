@@ -152,7 +152,7 @@ def animals():
                 nome = request.json['nome'],
                 razza = request.json['razza'].lower(),
                 sesso = request.json['sesso'],
-                data_di_nascita = request.json['data_di_nascita'],
+                data_di_nascita = request.json['data_di_nascita'].strftime("%Y-%m-%d"),
                 peso = request.json['peso'],
             except KeyError:
                 return make_response('dati errati o mancanti', 400)
