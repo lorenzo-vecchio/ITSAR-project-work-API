@@ -241,7 +241,7 @@ def preferiti():
             DELETE FROM preferiti
             WHERE id_utente = %s AND id = %s;
             """
-            data.execute_query(query, (session.get('user_id'), pref_id))
+            data.execute_insert(query, (session.get('user_id'), pref_id))
             return make_response('SUCCESS: favorite removed', 200)
     return make_response('not logged', 401)
 
