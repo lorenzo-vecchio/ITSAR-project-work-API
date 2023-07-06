@@ -77,7 +77,7 @@ def login():
 
         
         
-@app.route("/animals", methods=['GET', 'POST', 'DELETE'])
+@app.route("/animals", methods=['GET', 'POST', 'DELETE', 'PUT'])
 def animals():
     data = DatabaseConnector(db_connection_info)
     data.connect()
@@ -146,6 +146,28 @@ def animals():
             """
             data.execute_query(query)
             return make_response('animale eliminato', 200)
+        if request.method == 'PUT':
+            try:
+                id_animale = request.json['id'],
+                nome = request.json['nome'],
+                razza = request.json['razza'].lower(),
+                sesso = request.json['sesso'],
+                data_di_nascita = request.json['data_di_nascita'],
+                peso = request.json['peso'],
+            except KeyError:
+                return make_response('dati errati o mancanti', 400)
+            result = data.execute_query("SELECT id FROM razze WHERE nomeRazza = %s", (razza,))
+            if result:
+                    id_razza = result[0][0]
+            else:
+                    return make_response('ERROR: Razza not found', 400)
+            query = """
+            UPDATE animali 
+            SET nomeAnimale = %s, sesso = %s, data_di_nascita = %s, id_razza = %s, peso = %s
+            WHERE id_utente = %s and id = %s
+            """
+            data.execute_insert(query, (nome, sesso, data_di_nascita, id_razza, str(peso), session.get('user_id'), id_animale))
+            return make_response('Animal update', 200)
     return make_response('Not logged', 401)
 
 @app.route("/servizi", methods=['GET'])
