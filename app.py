@@ -166,7 +166,7 @@ def animals():
             SET nomeAnimale = %s, sesso = %s, data_di_nascita = %s, id_razza = %s, peso = %s
             WHERE id_utente = %s and id = %s
             """
-            data.execute_insert(query, (nome, sesso, data_di_nascita, id_razza, str(peso), session.get('user_id'), id_animale))
+            data.execute_insert(query, (nome, sesso, data_di_nascita, id_razza, peso, session.get('user_id'), id_animale))
             return make_response('Animal update', 200)
     return make_response('Not logged', 401)
 
